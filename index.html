@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madeleine — The Family AI</title>
+  <style>
+    :root {
+      --cream: #faf7f2;
+      --warm-white: #ffffff;
+      --dark: #1a1a1a;
+      --mid: #4a4a4a;
+      --light: #8a8a8a;
+      --accent: #c8956c;
+      --accent-light: #f0e0d4;
+      --accent-dark: #a0704a;
+      --teal: #2d7a6e;
+      --teal-light: #e0f0ee;
+      --yellow: #f5c842;
+      --yellow-light: #fef9e5;
+      --border: #e8e2da;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      background: rgba(250, 247, 242, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dark);
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      margin-left: 32px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--dark); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .hero-badge::before { content: "✦"; }
+    .hero h1 {
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 24px;
+      color: var(--dark);
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--mid);
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--dark);
+      color: white;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: 100px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .hero-cta:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--light);
+      text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* SECTION SHARED */
+    section { padding: 100px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: normal;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    /* PITCH */
+    .pitch { background: var(--dark); color: white; }
+    .pitch .section-label { color: rgba(255,255,255,0.4); }
+    .pitch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .pitch-quote {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      line-height: 1.4;
+      font-weight: normal;
+      border-left: 3px solid var(--accent);
+      padding-left: 28px;
+      color: rgba(255,255,255,0.9);
+    }
+    .pitch-body {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.8;
+    }
+    .pitch-body strong { color: white; }
+    .pitch-tags {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .pitch-tag {
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 64px;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .feature-card {
+      background: white;
+      padding: 40px 32px;
+      border-right: 2px solid var(--border);
+    }
+    .feature-card:last-child { border-right: none; }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    .feature-card:nth-child(1) .feature-icon { background: var(--yellow-light); }
+    .feature-card:nth-child(2) .feature-icon { background: var(--teal-light); }
+    .feature-card:nth-child(3) .feature-icon { background: var(--accent-light); }
+    .feature-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      font-weight: bold;
+      font-family: 'Helvetica Neue', sans-serif;
+    }
+    .feature-card p {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* DEMO / SCREENSHOTS */
+    .demo { background: white; }
+    .demo-header { text-align: center; margin-bottom: 64px; }
+    .phones-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .phone-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .phone-wrap:nth-child(2) .phone { transform: scale(1.07); }
+    .phone {
+      width: 230px;
+      border-radius: 38px;
+      border: 8px solid #1a1a1a;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+      position: relative;
+      background: #f0ece6;
+      aspect-ratio: 9/19.5;
+    }
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100px; height: 28px;
+      background: #1a1a1a;
+      border-radius: 0 0 16px 16px;
+      z-index: 10;
+    }
+    .phone img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* placeholder when no image */
+    .phone-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 40px 20px;
+      background: linear-gradient(160deg, #faf7f2 0%, #f0ece4 100%);
+    }
+    .phone-placeholder .mock-chat {
+      width: 100%;
+    }
+    /* --- Faithful app mockup styles --- */
+    .app-screen {
+      width: 100%; height: 100%;
+      background: #f5efe8;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      overflow: hidden;
+    }
+    .app-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 38px 14px 10px;
+      flex-shrink: 0;
+    }
+    .app-topbar-btn {
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      color: #555;
+    }
+    .app-messages {
+      flex: 1;
+      overflow: hidden;
+      padding: 4px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .app-bubble-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+    }
+    .app-bubble-row.user { flex-direction: row-reverse; }
+    .app-avatar {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #e8774a;
+      color: white;
+      font-size: 0.5rem;
+      font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .app-bubble {
+      border-radius: 16px;
+      padding: 7px 10px;
+      font-size: 0.58rem;
+      line-height: 1.45;
+      max-width: 78%;
+    }
+    .app-bubble.user {
+      background: #e5e0d8;
+      color: #222;
+      border-bottom-right-radius: 4px;
+    }
+    .app-bubble.bot {
+      background: white;
+      color: #222;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .app-cal-card {
+      background: #f5c842;
+      border-radius: 12px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      cursor: pointer;
+    }
+    .app-cal-icon {
+      background: rgba(255,255,255,0.5);
+      border-radius: 7px;
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    .app-cal-info { display: flex; flex-direction: column; gap: 1px; }
+    .app-cal-time { font-size: 0.5rem; color: rgba(0,0,0,0.5); }
+    .app-cal-title { font-size: 0.6rem; font-weight: 700; color: #1a1a1a; }
+    .app-cal-sub { font-size: 0.5rem; color: rgba(0,0,0,0.45); }
+    .app-cal-arrow {
+      margin-left: auto;
+      font-size: 0.55rem;
+      color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+      padding-top: 6px;
+    }
+    .app-cta-btn {
+      background: #2d7a6e;
+      color: white;
+      border-radius: 12px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 0.6rem;
+      font-weight: 600;
+    }
+    .app-cta-btn span { font-size: 0.5rem; color: rgba(255,255,255,0.65); }
+    .app-input-bar {
+      padding: 6px 10px 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-input {
+      flex: 1;
+      background: white;
+      border-radius: 20px;
+      padding: 7px 12px;
+      font-size: 0.55rem;
+      color: #aaa;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .app-mic {
+      width: 26px; height: 26px;
+      background: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    /* Livraisons screen */
+    .app-screen.pink { background: #f5e8e8; }
+    .delivery-card {
+      background: #fcd4d4;
+      border-radius: 14px;
+      margin: 0 8px;
+      padding: 10px;
+      flex: 1;
+      overflow: hidden;
+    }
+    .delivery-header {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 8px;
+    }
+    .delivery-icon {
+      font-size: 0.8rem;
+    }
+    .delivery-title { font-size: 0.65rem; font-weight: 700; color: #c0392b; }
+    .delivery-date { font-size: 0.5rem; color: #c0392b; opacity: 0.7; }
+    .delivery-section-label {
+      font-size: 0.45rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #999;
+      margin: 6px 0 3px;
+    }
+    .delivery-item {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .delivery-item-name { font-size: 0.53rem; color: #222; font-weight: 500; }
+    .delivery-item-shop { font-size: 0.48rem; color: #888; }
+    .delivery-item-date { font-size: 0.48rem; color: #aaa; flex-shrink: 0; padding-left: 4px; }
+    .delivery-action-btn {
+      background: #e74c3c;
+      color: white;
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 0.55rem;
+      font-weight: 600;
+      margin: 4px 8px 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .phone-caption {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      color: var(--light);
+      text-align: center;
+    }
+
+    /* HOW IT WORKS */
+    .how { background: var(--cream); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      margin-top: 64px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--dark);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-weight: bold;
+    }
+    .step p {
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.9rem;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* VIDEO */
+    .video-section { background: white; text-align: center; }
+    .video-wrap {
+      max-width: 800px;
+      margin: 48px auto 0;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--dark);
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Portrait phone-recording video */
+    .video-wrap.video-phone {
+      max-width: 360px;
+      aspect-ratio: 9/19.5;
+      border-radius: 32px;
+      border: 8px solid #1a1a1a;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+    }
+    .video-wrap.video-phone video {
+      object-fit: contain;
+      background: #000;
+    }
+    .video-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      color: rgba(255,255,255,0.5);
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.9rem;
+    }
+    .video-play {
+      width: 72px; height: 72px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 40px 24px;
+      font-family: 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+    footer strong { color: white; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .pitch-grid { grid-template-columns: 1fr; gap: 40px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-card { border-right: none; border-bottom: 2px solid var(--border); }
+      .feature-card:last-child { border-bottom: none; }
+      .steps { grid-template-columns: 1fr; gap: 36px; }
+      .phone-wrap:nth-child(2) .phone { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Madeleine</div>
+    <div class="nav-links">
+      <a href="#pitch">Le Projet</a>
+      <a href="#features">Features</a>
+      <a href="#demo">Screens</a>
+      <a href="#video">Vidéo</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">Side Project · Co-founded with Dany Agostinho</div>
+    <h1>Made<em>leine</em></h1>
+    <p class="hero-sub">
+      The first LLM-powered assistant built specifically for the coordination, context, and intelligence of modern households.
+    </p>
+    <a class="hero-cta" href="#video">
+      Voir la démo &darr;
+    </a>
+    <div class="hero-scroll">scroll ↓</div>
+  </section>
+
+  <!-- PITCH -->
+  <section class="pitch" id="pitch">
+    <div class="container">
+      <div class="section-label">The Problem</div>
+      <div class="pitch-grid">
+        <div>
+          <blockquote class="pitch-quote">
+            Modern families lack a shared, context-aware AI that understands their household's people, schedules, and routines — leaving co-parents to carry the mental load <em style="color: var(--accent);">alone</em>.
+          </blockquote>
+        </div>
+        <div>
+          <p class="pitch-body">
+            General-purpose AI has broad world knowledge but zero awareness of a family's personal context — names, routines, hobbies, upcoming events.<br><br>
+            Coordination ends up scattered across sticky notes, chat logs, and forgotten reminders, with no shared "single source of truth."<br><br>
+            <strong>Madeleine</strong> is the shared intelligence and extra administrative brain every modern family needs — secure, collaborative, and proactive.
+          </p>
+          <div class="pitch-tags">
+            <span class="pitch-tag">Secure</span>
+            <span class="pitch-tag">Collaborative</span>
+            <span class="pitch-tag">Proactive</span>
+            <span class="pitch-tag">LLM-powered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <div class="section-label">What it does</div>
+      <h2 class="section-title">Unified household <em>intelligence</em></h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗓️</div>
+          <h3>Synchronized Co-Parenting</h3>
+          <p>Both partners share the exact same contextual ecosystem. Manage schedules, tasks, and reminders together in real-time — no more constant alignment overhead.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔮</div>
+          <h3>Proactive Anticipation</h3>
+          <p>Madeleine cross-references birthdays, travel schedules, and routines to surface suggestions before you even feel the stress — gift ideas, packing lists, logistics.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3>Family Memory</h3>
+          <p>Unlike generic AI tools, Madeleine safely remembers names, hobbies, allergies, and habits — anchoring powerful LLM intelligence in your private family ecosystem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO SCREENSHOTS -->
+  <section class="demo" id="demo">
+    <div class="container">
+      <div class="demo-header">
+        <div class="section-label">App Demo</div>
+        <h2 class="section-title">See it in <em>action</em></h2>
+        <p style="font-family:'Helvetica Neue',sans-serif; color:var(--mid); max-width:500px; margin:0 auto; font-size:0.95rem;">
+          A few snapshots from the working prototype — built and tested with real families.
+        </p>
+      </div>
+      <div class="phones-row">
+
+        <!-- PHONE 1: Calendar Olivia -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <img src="screenshots/screen1.png" alt="Ajout d'événement calendrier"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="app-screen" style="display:none;">
+              <div class="app-topbar">
+                <div class="app-topbar-btn">‹</div>
+                <div class="app-topbar-btn">···</div>
+              </div>
+              <div class="app-messages">
+                <div class="app-bubble-row user">
+                  <div class="app-avatar">I</div>
+                  <div class="app-bubble user">Ajoute-moi dans le calendrier anniversaire 40 ans Olivia dimanche 6 juin à 18h au Riff Club à Boulogne</div>
+                </div>
+                <div class="app-bubble-row">
+                  <div class="app-bubble bot">Ajouté au calendrier familial ! L'anniversaire d'Olivia le dimanche 6 juin à 18h au Riff Club à Boulogne est bien noté.<br><br>Tu veux que je crée une carte pour l'occasion ?</div>
+                </div>
+                <div style="padding:0 2px; display:flex; flex-direction:column; gap:6px;">
+                  <div class="app-cal-card">
+                    <div class="app-cal-icon">📅</div>
+                    <div class="app-cal-info">
+                      <div class="app-cal-time">Sat, Jun 6 · 8 P…</div>
+                      <div class="app-cal-title">Anniversaire 40 ans Olivia</div>
+                      <div class="app-cal-sub">Family event</div>
+                    </div>
+                    <div class="app-cal-arrow">›</div>
+                  </div>
+                  <div class="app-cta-btn">
+                    <div style="display:flex;align-items:center;gap:5px;"><span style="font-size:0.7rem;">✦</span> Créer une carte</div>
+                    <div><span>La carte sera disponible sur l'accueil</span> ›</div>
+                  </div>
+                  <div style="font-size:0.55rem;color:#aaa;padding:2px 2px 0;">↑</div>
+                </div>
+              </div>
+              <div class="app-input-bar">
+                <div class="app-input">Votre message…</div>
+                <div class="app-mic">🎤</div>
+              </div>
+            </div>
+          </div>
+          <span class="phone-caption">Ajout agenda en langage naturel</span>
+        </div>
+
+        <!-- PHONE 2: Livraisons (center, bigger) -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <img src="screenshots/screen2.png" alt="Suivi livraisons"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="app-screen pink" style="display:none;">
+              <div class="app-topbar">
+                <div class="app-topbar-btn">‹</div>
+                <div class="app-topbar-btn">···</div>
+              </div>
+              <div class="delivery-card">
+                <div class="delivery-header">
+                  <span class="delivery-icon">🚚</span>
+                  <div>
+                    <div class="delivery-title">Livraisons</div>
+                    <div class="delivery-date">28 mai · jeudi</div>
+                  </div>
+                </div>
+                <div class="delivery-section-label">COMMANDÉ</div>
+                <div class="delivery-item">
+                  <div>
+                    <div class="delivery-item-name">Baskets à scratchs en toile, Baskets C…</div>
+                    <div class="delivery-item-shop">La Redoute</div>
+                  </div>
+                  <div class="delivery-item-date">28/05</div>
+                </div>
+                <div class="delivery-item">
+                  <div>
+                    <div class="delivery-item-name">Order C030260507969</div>
+                    <div class="delivery-item-shop">Jardin d'Acclimatation</div>
+                  </div>
+                </div>
+                <div class="delivery-section-label">LIVRÉ</div>
+                <div class="delivery-item">
+                  <div>
+                    <div class="delivery-item-name">LaCroix – Eau pétillante naturel – 12 ca…</div>
+                    <div class="delivery-item-shop">Amazon.fr</div>
+                  </div>
+                  <div class="delivery-item-date">21/05</div>
+                </div>
+                <div class="delivery-item" style="border:none;">
+                  <div>
+                    <div class="delivery-item-name">MIKAFEN Lot de 2 Gigoteuses d'été p…</div>
+                    <div class="delivery-item-shop">Amazon.fr</div>
+                  </div>
+                  <div class="delivery-item-date">23/05</div>
+                </div>
+              </div>
+              <div style="margin-top:6px;">
+                <div style="font-size:0.45rem;font-weight:600;letter-spacing:0.1em;color:#999;padding:0 16px 4px;">SUGGESTIONS</div>
+                <div class="delivery-action-btn" style="margin-bottom:4px;">
+                  <div>
+                    <div>Suivre les colis Jardin d'Acclimatation</div>
+                    <div style="font-size:0.45rem;opacity:0.7;">Jardin d'Acclimatation · 1 colis</div>
+                  </div>
+                  <span>›</span>
+                </div>
+                <div class="delivery-action-btn">
+                  <div>
+                    <div>Suivre les colis La Redoute</div>
+                    <div style="font-size:0.45rem;opacity:0.7;">La Redoute · 1 colis</div>
+                  </div>
+                  <span>↗</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="phone-caption">Suivi des livraisons centralisé</span>
+        </div>
+
+        <!-- PHONE 3: Multiple calendar events -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <img src="screenshots/screen3.png" alt="Ajout multiple événements"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="app-screen" style="display:none;">
+              <div class="app-topbar">
+                <div class="app-topbar-btn">‹</div>
+                <div class="app-topbar-btn">···</div>
+              </div>
+              <div class="app-messages">
+                <div class="app-bubble-row user">
+                  <div class="app-avatar">I</div>
+                  <div class="app-bubble user">Ajoute-moi dans le calendrier coiffure pour Gabi demain à 16h30 et cours de natation pour Gabi et Jonah à 10h30.</div>
+                </div>
+                <div class="app-bubble-row">
+                  <div class="app-bubble bot">Les deux événements sont ajoutés au calendrier familial pour demain :<br><br>• <b>Cours de natation</b> — Gaby et Jonah à 10h30<br>• <b>Coiffure</b> — Gaby à 16h30<br><br>Belle journée chargée demain ! 😊</div>
+                </div>
+                <div style="padding:0 2px; display:flex; gap:6px;">
+                  <div class="app-cal-card" style="flex:1;">
+                    <div class="app-cal-info">
+                      <div class="app-cal-time">Sat, May 30 · …</div>
+                      <div class="app-cal-title">Coiffure – Gaby</div>
+                      <div class="app-cal-sub">Family event</div>
+                    </div>
+                    <div class="app-cal-arrow">›</div>
+                  </div>
+                  <div class="app-cal-card" style="flex:1;">
+                    <div class="app-cal-info">
+                      <div class="app-cal-time">Sat, May 30 · …</div>
+                      <div class="app-cal-title">Cours de natation – Gaby et Jonah</div>
+                      <div class="app-cal-sub">Family event</div>
+                    </div>
+                    <div class="app-cal-arrow">›</div>
+                  </div>
+                </div>
+                <div style="font-size:0.55rem;color:#aaa;padding:2px 2px 0;">↑</div>
+              </div>
+              <div class="app-input-bar">
+                <div class="app-input">Votre message…</div>
+                <div class="app-mic">🎤</div>
+              </div>
+            </div>
+          </div>
+          <span class="phone-caption">Gestion multi-événements</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO DEMO -->
+  <section class="video-section" id="video">
+    <div class="container">
+      <div class="section-label">Demo Video</div>
+      <h2 class="section-title">Watch <em>Madeleine</em> in action</h2>
+      <p style="font-family:'Helvetica Neue',sans-serif; color:var(--mid); max-width:500px; margin:0 auto; font-size:0.95rem;">
+        A live walkthrough of the working prototype — natural-language calendar management, delivery tracking, and proactive suggestions.
+      </p>
+
+      <div class="video-wrap video-phone">
+        <video src="demo.mp4" controls playsinline preload="metadata"></video>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="container">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">Simple to use,<br><em>smart by design</em></h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Set up your family profile</h3>
+          <p>Add your family members, their birthdays, hobbies, allergies, and routines. Madeleine keeps this context private and secure.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>Invite your co-parent</h3>
+          <p>Share the same contextual space with your partner. Both of you see the same calendar, tasks, and AI memory — no more misaligned reminders.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Let Madeleine work for you</h3>
+          <p>Ask in plain language. Get smart answers, proactive suggestions, and an AI that knows your family — not just the world.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS MODEL -->
+  <section class="how">
+    <div class="container">
+      <div class="section-label">Business Model</div>
+      <h2 class="section-title">The "Family Organizer" <em>subscription</em></h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--yellow-light);">💳</div>
+          <h3>Single Family Plan</h3>
+          <p>One subscription covers both parents + kids — €7.99/month, or €59.99/year (~€5/month). A 14–30 day free trial lowers the barrier to entry.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--teal-light);">🎯</div>
+          <h3>Target Market</h3>
+          <p>~123,000 affluent, tech-savvy executive parents in Paris — about 6% of the Parisian population, based on Insee demographic data.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--accent-light);">📈</div>
+          <h3>Pricing Logic</h3>
+          <p>Aligned with premium productivity app standards — high enough to cover LLM API and server costs, affordable enough for parents to justify.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p><strong>Madeleine</strong> — The Family AI &nbsp;·&nbsp; A side project by Dany Agostinho &amp; Ilana Cohen Bengio</p>
+    <p style="margin-top:8px; font-size:0.72rem;">© 2026 — All rights reserved</p>
+  </footer>
+
+</body>
+</html>
